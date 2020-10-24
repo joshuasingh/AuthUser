@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const SignUp = require("./RegisterUser/SignUp");
 const SignIn = require("./AuthenticateUser/SignIn");
+const ProtectedResource = require("./Resources_Dir/Protected_Resources");
+const RefreshAccess = require("./AuthenticateUser/RefreshAccess");
 
 //middleware layer
 app.use(cors());
@@ -14,6 +16,8 @@ app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 //route paths
 app.use("/user/SignUp", SignUp);
 app.use("/user/SignIn", SignIn);
+app.use("/resources", ProtectedResource);
+app.use("/auth/refresh", RefreshAccess);
 
 var port = process.env.Port || 8081;
 

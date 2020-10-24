@@ -4,6 +4,7 @@ var withDB = require("../MongoBridge/MongoConnect");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { refreshKey, accessKey } = require("../AccessFiles/JwtKeys");
+var TokenList = require("./TokenList");
 
 var route1 = router.route("/");
 
@@ -28,15 +29,23 @@ var verifyUser = (email, res) => {
 //generate access and refresh tokens
 var generateTokens = (user) => {
   //access token expires in 1 hour
-  let accessToken = jwt.sign(user, accessKey, { expiresIn: "1h" });
+  let accessToken = jwt.sign({ email: user.email }, accessKey, {
+    expiresIn: "25s",
+  });
 
   //refresh token expires in 7 days
-  let refreshToken = jwt.sign(user, refreshKey, { expiresIn: "5d" });
+  let refreshToken = jwt.sign({ email: user.email }, refreshKey, {
+    expiresIn: "5d",
+  });
+
+  //add refresh token to the list
+  TokenList.push(refreshToken);
+  console.log(TokenList);
 
   return { accessToken, refreshToken };
 };
 
-//verify the username and password
+//verify the username and password and then generate refresh and access token
 route1.post(async (req, res) => {
   var { user } = req.body;
   var authStat = false;
@@ -44,7 +53,7 @@ route1.post(async (req, res) => {
   try {
     var userDetails = await verifyUser(user.email, res);
 
-    //if the email is present in the db
+    //if the email is present in the database
     if (userDetails.length !== 0) {
       const match = await bcrypt.compare(
         user.password,
@@ -61,7 +70,7 @@ route1.post(async (req, res) => {
         statusMessage = "Incorrect email or password ";
       }
     } else {
-      //if nothing found in the db.
+      //if nothing found in the database.
       statusMessage = "Incorrect email or password ";
     }
   } catch (e) {
