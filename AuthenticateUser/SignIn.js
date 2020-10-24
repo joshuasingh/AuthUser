@@ -30,7 +30,7 @@ var verifyUser = (email, res) => {
 var generateTokens = (user) => {
   //access token expires in 1 hour
   let accessToken = jwt.sign({ email: user.email }, accessKey, {
-    expiresIn: "25s",
+    expiresIn: "60s",
   });
 
   //refresh token expires in 7 days

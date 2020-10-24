@@ -19,7 +19,7 @@ route1.post(async (req, res) => {
     } else {
       //the refresh token is valid, so generate a new access token.
       let accessToken = jwt.sign({ email: result.email }, accessKey, {
-        expiresIn: "25s",
+        expiresIn: "60s",
       });
       res.json({ status: "success", token: accessToken }).status(200);
     }
