@@ -5,7 +5,11 @@ const { accessKey } = require("../AccessFiles/JwtKeys");
 
 //authication middleware.
 var auth = (req, res, next) => {
-  var token = req.headers["authorization"].split(" ")[1];
+  try {
+    var token = req.headers["authorization"].split(" ")[1];
+  } catch (e) {
+    res.status(401).json({ status: "failed", message: "unAuthenticated user" });
+  }
 
   //verify the access token
   jwt.verify(token, accessKey, (err, result) => {
