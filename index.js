@@ -19,7 +19,7 @@ app.use("/user/SignIn", SignIn);
 app.use("/resources", ProtectedResource);
 app.use("/auth/refresh", RefreshAccess);
 
-var port = process.env.Port || 8081;
+var port = process.env.PORT || 8081;
 
 var server = http.createServer(app);
 
