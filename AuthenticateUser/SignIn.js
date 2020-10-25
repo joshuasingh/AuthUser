@@ -40,7 +40,6 @@ var generateTokens = (user) => {
 
   //add refresh token to the list
   TokenList.push(refreshToken);
-  console.log(TokenList);
 
   return { accessToken, refreshToken };
 };
@@ -75,20 +74,18 @@ route1.post(async (req, res) => {
     }
   } catch (e) {
     res
-      .json({ status: "failed", message: "unable to login", report: e })
-      .status(401);
+      .status(500)
+      .json({ status: "failed", message: "unable to login", report: e });
   }
 
   if (authStat) {
-    res
-      .json({
-        status: "success",
-        message: statusMessage,
-        token: { accessToken: accessToken, refreshToken: refreshToken },
-      })
-      .status(200);
+    res.status(200).json({
+      status: "success",
+      message: statusMessage,
+      token: { accessToken: accessToken, refreshToken: refreshToken },
+    });
   } else {
-    res.json({ status: "failed", message: statusMessage }).status(400);
+    res.status(401).json({ status: "failed", message: statusMessage });
   }
 });
 

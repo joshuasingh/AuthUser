@@ -14,20 +14,16 @@ route1.post(async (req, res) => {
     //checking if the refresh token is actually in our token list
     if (err || !TokenList.includes(token)) {
       res
-        .json({ status: "failed", message: "unAuthenticated user" })
-        .status(401);
+        .status(401)
+        .json({ status: "failed", message: "unAuthenticated user" });
     } else {
       //the refresh token is valid, so generate a new access token.
       let accessToken = jwt.sign({ email: result.email }, accessKey, {
         expiresIn: "60s",
       });
-      res.json({ status: "success", token: accessToken }).status(200);
+      res.status(200).json({ status: "success", token: accessToken });
     }
   });
-
-  res
-    .json({ status: "success", message: "access to the resource" })
-    .status(200);
 });
 
 module.exports = router;

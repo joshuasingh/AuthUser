@@ -6,6 +6,7 @@ const saltRounds = 10;
 
 var route1 = router.route("/");
 
+//setting user info in db
 var setUserInfo = (user, res) => {
   return new Promise((resolve, reject) => {
     withDB(
@@ -14,7 +15,6 @@ var setUserInfo = (user, res) => {
           if (err) {
             reject(err);
           } else {
-            console.log(result);
             resolve(result);
           }
         });
@@ -25,6 +25,7 @@ var setUserInfo = (user, res) => {
   });
 };
 
+//checking for unique email
 var UniqueEmail = (email, res) => {
   return new Promise((reject, resolve) => {
     withDB(
@@ -33,7 +34,6 @@ var UniqueEmail = (email, res) => {
           if (err) {
             reject(err);
           } else {
-            console.log(result);
             resolve(result);
           }
         });
@@ -53,25 +53,27 @@ route1.post(async (req, res) => {
 
   try {
     var dataSet = await UniqueEmail(user.email, res);
-    console.log(dataSet);
+
     if (dataSet.length !== 0) {
       //user already in the system
       res
-        .json({ status: "failed", message: "User already exists" })
-        .status(200);
+        .status(403)
+        .json({ status: "failed", message: "User already exists" });
     } else {
       //set user info
       await setUserInfo(user, res);
     }
   } catch (e) {
-    res
-      .json({ status: "failed", message: "Unable to create a user", report: e })
-      .status(400);
+    res.status(500).json({
+      status: "failed",
+      message: "Unable to create a user",
+      report: e,
+    });
   }
 
   res
-    .json({ status: "success", message: "user Successfully created" })
-    .status(200);
+    .status(200)
+    .json({ status: "success", message: "user Successfully created" });
 });
 
 module.exports = router;
