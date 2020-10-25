@@ -50,5 +50,5 @@ $RECYCLE.BIN/
 node_modules/
 
 #ignore node security files
-AccessFiles/
+
 
